@@ -1,9 +1,21 @@
+const { request } = require("../app.js");
 const { selectTopics } = require("../models/models.js");
+const { selectArticles } = require("../models/models.js");
 
 exports.getTopics = (req, res, next) => {
-  // console.log("YOU'RE IN CONTROLLER");
   selectTopics().then((topics) => {
-    console.log(topics, "<------------------ CONTROLLER");
     res.status(200).send(topics);
   });
+};
+
+exports.getArticles = (req, res, next) => {
+  const id = req.params.article_id;
+
+  selectArticles(id)
+    .then((articles) => {
+      res.status(200).send({ articles: articles }); //sending articles object (line 16) back with key of articles (line 18) //THIS IS NOT DESTRUCTURED
+    })
+    .catch((err) => {
+      next(err);
+    });
 };

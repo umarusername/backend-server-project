@@ -1,9 +1,37 @@
 const express = require("express");
 const { getTopics } = require("./controllers/controllers.js");
+const { getArticles } = require("./controllers/controllers.js");
+
+//THIS IS AFTER I MADE A BRANCH NOT THE ORIGINAL MAIN --> I FORGOT TO DO ALL THIS WORK IN A SEPERATE BRANCH SO I'M WRITING THIS MESSAGE TO DIFFERENTIATE BETWEEN MAIN AND NCNEWS-#14 BRANCH.
 
 const app = express();
 
 app.get("/api/topics", getTopics);
+
+app.get("/api/articles/:article_id", getArticles);
+
+//THIS ERROR "HANDLER" ISN'T DOING ANYTHING - MAKE A REAL ONE!!
+//ALRIGHT I DON'T KNOW IF THIS IS DOING SOMETHING OR NOT
+app.all("/*", (req, res) => {
+  res.status(404).send({ msg: "path not found" });
+});
+
+//first error handler then if conditions not met the err is passed to next handler below (line 29)
+app.use((err, req, res, next) => {
+  console.log(err.code);
+  if (err.code === "22P02") {
+    res.status(400).send({ msg: "bad request" });
+  }
+  next(err);
+});
+
+//code below is dynamic and suitable for multiple errors like all 404s - also its an error handler
+app.use((err, req, res, next) => {
+  //   console.log(err.code);
+  if (err.status && err.msg) {
+    res.status(err.status).send({ msg: err.msg });
+  }
+});
 
 module.exports = app;
 
