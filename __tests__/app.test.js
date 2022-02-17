@@ -17,7 +17,7 @@ afterAll(() => {
 
 //ticket #3 connecting to topics
 describe("GET /api/topics", () => {
-  test("status: 200 - connecting to endpoint no problem", () => {
+  test("status: 200 - connecting to endpoint successfully", () => {
     return request(app)
       .get("/api/topics")
       .expect(200)
@@ -30,8 +30,16 @@ describe("GET /api/topics", () => {
               slug: expect.any(String),
             })
           );
-          // console.log("=================>", topic);
         });
+      });
+  });
+
+  test("status: 404 - can't find endpoint", () => {
+    return request(app)
+      .get("/api/topiks")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("path not found");
       });
   });
 });

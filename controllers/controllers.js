@@ -3,9 +3,15 @@ const { selectTopics } = require("../models/models.js");
 const { selectArticles } = require("../models/models.js");
 
 exports.getTopics = (req, res, next) => {
-  selectTopics().then((topics) => {
-    res.status(200).send(topics);
-  });
+  selectTopics()
+    .then((topics) => {
+      console.log("<======IN CONTROLLER THEN======>");
+      res.status(200).send(topics);
+    })
+    .catch((err) => {
+      console.log("<=======IN CONTROLLER CATCH========>");
+      next(err);
+    });
 };
 
 exports.getArticles = (req, res, next) => {
