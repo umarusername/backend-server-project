@@ -11,14 +11,16 @@ app.get("/api/topics", getTopics);
 app.get("/api/articles/:article_id", getArticles);
 
 //THIS ERROR "HANDLER" ISN'T DOING ANYTHING - MAKE A REAL ONE!!
-//ALRIGHT I DON'T KNOW IF THIS IS DOING SOMETHING OR NOT
+//Edit: This will automatically respond with an error 404 and send
+//back a msg of "path not found" to any invalid url input.
 app.all("/*", (req, res) => {
+  console.log("<-----------COMING FROM APP.JS------------>");
   res.status(404).send({ msg: "path not found" });
 });
 
-//first error handler then if conditions not met the err is passed to next handler below (line 29)
+//first error handler then if conditions not met the err is passed to next handler below (line 30)
 app.use((err, req, res, next) => {
-  console.log(err.code);
+  //console.log(err.code);
   if (err.code === "22P02") {
     res.status(400).send({ msg: "bad request" });
   }
@@ -27,7 +29,7 @@ app.use((err, req, res, next) => {
 
 //code below is dynamic and suitable for multiple errors like all 404s - also its an error handler
 app.use((err, req, res, next) => {
-  //   console.log(err.code);
+  //console.log(err.code);
   if (err.status && err.msg) {
     res.status(err.status).send({ msg: err.msg });
   }

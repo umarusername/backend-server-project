@@ -30,12 +30,13 @@ describe("GET /api/topics", () => {
               slug: expect.any(String),
             })
           );
-          console.log("=================>", topic);
+          // console.log("=================>", topic);
         });
       });
   });
 });
-//ticket #14 connecting to article:id
+
+//ticket #14 connecting to article:id - happy path
 describe("GET /api/articles/:article_id", () => {
   test("status: 200 - connecting to article endpoint", () => {
     return request(app)
@@ -71,8 +72,8 @@ describe("GET /api/articles/:article_id", () => {
         expect(body.msg).toBe("bad request");
       });
   });
-
-  test("status:404 - responds with an error message when passed a bad request", () => {
+  //This test is linked to app.all (line 16 to 19) - any bad url given is handled there.
+  test("status:404 - responds with an error when path not found", () => {
     return request(app)
       .get("/badroute")
       .expect(404)
