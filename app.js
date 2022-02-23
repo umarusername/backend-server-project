@@ -1,24 +1,27 @@
 const express = require("express");
 const { getTopics } = require("./controllers/controllers.js");
 const { getArticles } = require("./controllers/controllers.js");
-
-//THIS IS AFTER I MADE A BRANCH NOT THE ORIGINAL MAIN --> I FORGOT TO DO ALL THIS WORK IN A SEPERATE BRANCH SO I'M WRITING THIS MESSAGE TO DIFFERENTIATE BETWEEN MAIN AND NCNEWS-#14 BRANCH.
+const { patchArticle } = require("./controllers/controllers.js");
 
 const app = express();
+app.use(express.json());
 
 app.get("/api/topics", getTopics);
 
 app.get("/api/articles/:article_id", getArticles);
 
-//THIS ERROR "HANDLER" ISN'T DOING ANYTHING - MAKE A REAL ONE!!
+//don't need to do app.get for path requests
+
+//PATCH ticket #7
+app.patch("/api/articles/:article_id", patchArticle);
+
 //Edit: This will automatically respond with an error 404 and send
 //back a msg of "path not found" to any invalid url input.
 app.all("/*", (req, res) => {
-  console.log("<-----------COMING FROM APP.JS------------>");
   res.status(404).send({ msg: "path not found" });
 });
 
-//first error handler then if conditions not met the err is passed to next handler below (line 30)
+//first error handler then if conditions not met the err is passed to next handler below
 app.use((err, req, res, next) => {
   //console.log(err.code);
   if (err.code === "22P02") {

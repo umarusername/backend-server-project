@@ -20,3 +20,18 @@ exports.selectArticles = (id) => {
       return result.rows[0];
     });
 };
+
+exports.updateArticle = (id, votes) => {
+  const votesDeconstructed = votes.inc_votes; //votesDeconstructed will be 1
+  return db
+    .query(
+      "UPDATE articles SET votes=votes+$2 WHERE article_id = $1 RETURNING*; ",
+      [id, votesDeconstructed] //UPDATING the specific votes of article 5
+    )
+    .then((result) => {
+      if (result.rows.length === 0) {
+        return Promise.reject({ status: 404, msg: "article not found" });
+      }
+      return result.rows[0]; //returning the updated article 5 object
+    });
+};
