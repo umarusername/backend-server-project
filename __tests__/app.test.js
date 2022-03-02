@@ -92,7 +92,7 @@ describe("GET /api/articles/:article_id", () => {
 });
 
 //ticket #7 - patching article:id
-describe.only("PATCH /api/articles/:article_id", () => {
+describe("PATCH /api/articles/:article_id", () => {
   test("PATCH status: 200 - connecting to article endpoint", () => {
     const votesVar = { inc_votes: 1 }; //assigning object to votesVar variable
     return request(app)
@@ -141,27 +141,67 @@ describe.only("PATCH /api/articles/:article_id", () => {
   });
 });
 
+//ticket #21 - connecting to users
+describe("GET /api/users", () => {
+  test("status: 200 - connecting to endpoint successfully", () => {
+    return request(app)
+      .get("/api/users")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body).toHaveLength(4);
+        body.forEach((user) => {
+          expect(user).toEqual(
+            expect.objectContaining({
+              username: expect.any(String),
+              name: expect.any(String),
+              avatar_url: expect.any(String),
+            })
+          );
+        });
+      });
+  });
+
+  test("status: 404 - can't find user endpoint", () => {
+    return request(app)
+      .get("/api/usurs")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("path not found");
+      });
+  });
+});
+
+//ticket #9 - connecting to articles
+describe("GET /api/articles", () => {
+  test("status: 200 - connecting to endpoint successfully", () => {
+    return request(app)
+      .get("/api/articles")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body).toHaveLength(12);
+        body.forEach((article) => {
+          expect(article).toEqual(
+            expect.objectContaining({
+              title: expect.any(String),
+              topic: expect.any(String),
+              author: expect.any(String),
+              body: expect.any(String),
+              created_at: expect.any(String),
+              votes: expect.any(Number),
+            })
+          );
+        });
+      });
+  });
+
+  test("status: 404 - can't find user endpoint", () => {
+    return request(app)
+      .get("/api/artikles")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("path not found");
+      });
+  });
+});
+
 //in the for each test for slug and description - test for data type not ACTUAL data
-//THIS CODE WILL BE USEFUL FOR LATER ON TICKET #9
-// describe.only("GET /api/articles/:article_id", () => {
-//   test("status: 200 - connecting to article endpoint", () => {
-//     return request(app)
-//       .get("/api/articles/4")
-//       .expect(200)
-//       .then(({ body }) => {
-//         expect(body).toHaveLength(12);
-//         body.forEach((article) => {
-//           expect(article).toEqual(
-//             expect.objectContaining({
-//               title: expect.any(String),
-//               topic: expect.any(String),
-//               author: expect.any(String),
-//               body: expect.any(String),
-//               created_at: expect.any(String),
-//               votes: expect.any(Number),
-//             })
-//           );
-//           // console.log("=================>", article);
-//         });
-//       });
-//   });

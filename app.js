@@ -2,15 +2,21 @@ const express = require("express");
 const { getTopics } = require("./controllers/controllers.js");
 const { getArticles } = require("./controllers/controllers.js");
 const { patchArticle } = require("./controllers/controllers.js");
+const { getUsers } = require("./controllers/controllers.js");
+const { getArticleBody } = require("./controllers/controllers.js");
 
 const app = express();
 app.use(express.json());
 
 app.get("/api/topics", getTopics);
 
+app.get("/api/users", getUsers);
+
 app.get("/api/articles/:article_id", getArticles);
 
-//don't need to do app.get for path requests
+app.get("/api/articles", getArticleBody);
+
+//don't need to do app.get for patch requests
 
 //PATCH ticket #7
 app.patch("/api/articles/:article_id", patchArticle);

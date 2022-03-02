@@ -2,7 +2,10 @@ const { request } = require("../app.js");
 const { selectTopics } = require("../models/models.js");
 const { selectArticles } = require("../models/models.js");
 const { updateArticle } = require("../models/models.js");
+const { selectUsers } = require("../models/models.js");
+const { selectArticleBody } = require("../models/models.js");
 
+//GET ticket #3 connecting to topics
 exports.getTopics = (req, res, next) => {
   selectTopics()
     .then((topics) => {
@@ -15,6 +18,7 @@ exports.getTopics = (req, res, next) => {
     });
 };
 
+//GET ticket #14 connecting to article:id
 exports.getArticles = (req, res, next) => {
   const id = req.params.article_id;
   selectArticles(id)
@@ -34,6 +38,28 @@ exports.patchArticle = (req, res, next) => {
     .then((result) => {
       // console.log("HELLO FROM CONTROLLER", result);
       res.status(200).send(result); //getting the updated article object then sending it back to client
+    })
+    .catch((err) => {
+      next(err);
+    });
+};
+
+//ticket #21 - connecting to users
+exports.getUsers = (req, res, next) => {
+  selectUsers()
+    .then((users) => {
+      res.status(200).send(users);
+    })
+    .catch((err) => {
+      next(err);
+    });
+};
+
+//GET ticket #9 - connecting to articles
+exports.getArticleBody = (req, res, next) => {
+  selectArticleBody()
+    .then((articles) => {
+      res.status(200).send(articles);
     })
     .catch((err) => {
       next(err);
