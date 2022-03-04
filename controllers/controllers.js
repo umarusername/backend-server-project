@@ -48,6 +48,7 @@ exports.patchArticle = (req, res, next) => {
 exports.getUsers = (req, res, next) => {
   selectUsers()
     .then((users) => {
+      // console.log("look here --->", users);
       res.status(200).send(users);
     })
     .catch((err) => {

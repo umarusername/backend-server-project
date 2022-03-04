@@ -3,6 +3,8 @@ const db = require("../db/connection.js");
 const seed = require("../db/seeds/seed.js");
 const app = require("../app.js");
 const request = require("supertest");
+const articles = require("../db/data/test-data/articles.js");
+
 //404 and 500 in own seperate describe
 //request.get(url).expect(statuscode).then
 
@@ -191,6 +193,15 @@ describe("GET /api/articles", () => {
             })
           );
         });
+      });
+  });
+
+  test("status: 200 - articles sorted by date in descending order", () => {
+    return request(app)
+      .get("/api/articles?sort_by=created_at")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body).toBeSortedBy("created_at", { descending: true });
       });
   });
 
