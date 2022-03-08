@@ -29,7 +29,6 @@ app.all("/*", (req, res) => {
 
 //first error handler then if conditions not met the err is passed to next handler below
 app.use((err, req, res, next) => {
-  //console.log(err.code);
   if (err.code === "22P02") {
     res.status(400).send({ msg: "bad request" });
   }
@@ -38,7 +37,6 @@ app.use((err, req, res, next) => {
 
 //code below is dynamic and suitable for multiple errors like all 404s - also its an error handler
 app.use((err, req, res, next) => {
-  //console.log(err.code);
   if (err.status && err.msg) {
     res.status(err.status).send({ msg: err.msg });
   }

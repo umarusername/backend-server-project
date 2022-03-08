@@ -10,16 +10,27 @@ exports.selectTopics = () => {
   });
 };
 
+//ALSO TICKET #5 IS TO REFACTOR TICKET #14 BELOW
 //GET ticket #14 connecting to article:id
 exports.selectArticles = (id) => {
   return db
-    .query("SELECT * FROM articles WHERE article_id = $1;", [id]) //$1 would be first element (can add more(also this stops sql injection))
+    .query(
+      `SELECT articles.*,
+      COUNT(comments.comment_id) AS comment_count 
+      FROM articles 
+      LEFT JOIN comments ON comments.article_id = articles.article_id 
+      WHERE articles.article_id = $1
+      GROUP BY articles.article_id;`,
+      [id] //$1 would be first element (can add more(also this stops sql injection))
+    )
     .then((result) => {
       if (result.rows.length === 0) {
         return Promise.reject({ status: 404, msg: "article not found" });
       }
-      //console.log("=====++====>", result.rows);
       return result.rows[0];
+    })
+    .catch((err) => {
+      console.log(err);
     });
 };
 
