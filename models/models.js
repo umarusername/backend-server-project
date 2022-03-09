@@ -28,9 +28,6 @@ exports.selectArticles = (id) => {
         return Promise.reject({ status: 404, msg: "article not found" });
       }
       return result.rows[0];
-    })
-    .catch((err) => {
-      console.log(err);
     });
 };
 
