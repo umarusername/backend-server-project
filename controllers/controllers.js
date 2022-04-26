@@ -4,6 +4,7 @@ const { selectArticles } = require("../models/models.js");
 const { updateArticle } = require("../models/models.js");
 const { selectUsers } = require("../models/models.js");
 const { selectArticleBody } = require("../models/models.js");
+const { selectCommentsByArticle } = require("../models/models.js");
 
 //GET ticket #3 connecting to topics
 exports.getTopics = (req, res, next) => {
@@ -61,6 +62,18 @@ exports.getArticleBody = (req, res, next) => {
   selectArticleBody()
     .then((articles) => {
       res.status(200).send(articles);
+    })
+    .catch((err) => {
+      next(err);
+    });
+};
+
+//GET ticket #15 - connecting to article comments
+exports.getCommentsByArticle = (req, res, next) => {
+  const id = req.params.article_id;
+  selectCommentsByArticle(id)
+    .then((comments) => {
+      res.status(200).send(comments);
     })
     .catch((err) => {
       next(err);

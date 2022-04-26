@@ -4,6 +4,7 @@ const { getArticles } = require("./controllers/controllers.js");
 const { patchArticle } = require("./controllers/controllers.js");
 const { getUsers } = require("./controllers/controllers.js");
 const { getArticleBody } = require("./controllers/controllers.js");
+const { getCommentsByArticle } = require("./controllers/controllers.js");
 
 const app = express();
 app.use(express.json());
@@ -15,6 +16,8 @@ app.get("/api/users", getUsers);
 app.get("/api/articles/:article_id", getArticles);
 
 app.get("/api/articles", getArticleBody);
+
+app.get("/api/articles/:article_id/comments", getCommentsByArticle);
 
 //don't need to do app.get for patch requests
 

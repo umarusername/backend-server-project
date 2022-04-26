@@ -68,3 +68,21 @@ exports.selectArticleBody = () => {
       return result.rows;
     });
 };
+
+//GET ticket #15 - get comments of an article
+exports.selectCommentsByArticle = (id) => {
+  //"SELECT * FROM comments WHERE comment_id = article_id"
+  return db
+    .query(
+      `SELECT * FROM comments
+  WHERE article_id = $1`,
+      [id]
+    )
+    .then((result) => {
+      if (result.rows.length === 0) {
+        return Promise.reject({ status: 404, msg: "comments not found" });
+      }
+      console.log("RESULT FROM CONTROLLER===>", result.rows);
+      return result.rows;
+    });
+};

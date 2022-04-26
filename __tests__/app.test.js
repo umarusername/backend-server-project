@@ -46,7 +46,7 @@ describe("GET /api/topics", () => {
   });
 });
 
-//ticket #14 connecting to article:id
+//ticket #14 connecting to article:id AND ticket #5
 describe("GET /api/articles/:article_id ON THIS ONE", () => {
   test("status: 200 - connecting to article endpoint", () => {
     return request(app)
@@ -236,6 +236,30 @@ describe("GET /api/articles", () => {
       .expect(404)
       .then(({ body }) => {
         expect(body.msg).toBe("path not found");
+      });
+  });
+});
+
+//ticket #15 - GET /api/articles/:article_id/comments
+describe("GET /api/articles/:article_id/comments", () => {
+  test("status 200 - got comments successfully", () => {
+    return request(app)
+      .get("/api/articles/3/comments")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body).toHaveLength(2);
+        body.forEach((comment) => {
+          expect(comment).toEqual(
+            expect.objectContaining({
+              comment_id: expect.any(Number),
+              body: expect.any(String),
+              votes: expect.any(Number),
+              author: expect.any(String),
+              article_id: 3,
+              created_at: expect.any(String),
+            })
+          );
+        });
       });
   });
 });
