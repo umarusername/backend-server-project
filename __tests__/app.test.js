@@ -72,7 +72,7 @@ describe("GET /api/articles/:article_id ON THIS ONE", () => {
       .get("/api/articles/6")
       .expect(200)
       .then(({ body }) => {
-        console.log("comment count==>", body.articles.comment_count);
+        // console.log("comment count==>", body.articles.comment_count);
         expect(body.articles).toEqual({
           article_id: 6,
           title: expect.any(String),
@@ -198,15 +198,16 @@ describe("GET /api/users", () => {
   });
 });
 
-//ticket #9 - connecting to articles
+//ticket #9 - connecting to articles + ticket #10 REFACTOR
 describe("GET /api/articles", () => {
-  test("status: 200 - connecting to endpoint successfully", () => {
+  test("status: 200 - connecting to endpoint successfully + ticket #10 comment count", () => {
     return request(app)
       .get("/api/articles")
       .expect(200)
       .then(({ body }) => {
         expect(body).toHaveLength(12);
         body.forEach((article) => {
+          // console.log("comment count==>", body.articles.comment_count);
           expect(article).toEqual(
             expect.objectContaining({
               title: expect.any(String),
@@ -215,6 +216,7 @@ describe("GET /api/articles", () => {
               body: expect.any(String),
               created_at: expect.any(String),
               votes: expect.any(Number),
+              comment_count: expect.any(String),
             })
           );
         });
@@ -262,6 +264,68 @@ describe("GET /api/articles/:article_id/comments", () => {
         });
       });
   });
+
+  //error handling - 404
+  test("status 404 - comments not found", () => {
+    return request(app)
+      .get("/api/articles/999/comments")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("comments not found");
+      });
+  });
+
+  //error handling - 400
+  test("status 400 - bad request", () => {
+    return request(app)
+      .get("/api/articles/potatoes")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("bad request");
+      });
+  });
 });
 
-//in the for each test for slug and description - test for data type not ACTUAL data
+//ticket #11 - post new comment to article by id
+describe("POST /api/articles/:article_id/comments", () => {
+  test("status 200 - posted comment successfully", () => {
+    return request(app)
+      .post("/api/articles/3/comments")
+      .send({ author: "icellusedkars", body: "Hello world!" })
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.comment).toEqual({
+          author: "icellusedkars",
+          body: "Hello world!",
+          article_id: 3,
+          comment_id: expect.any(Number),
+          votes: expect.any(Number),
+          created_at: expect.any(String),
+        });
+      });
+  });
+
+  //error handling 400
+  test("status 400 - bad request(body)", () => {
+    return request(app)
+      .post("/api/articles/3/comments")
+      .send({ author: "icellusedkars", body: "" })
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("bad request");
+      });
+  });
+
+  //error handling 404
+  test("status 400 - bad request(user)", () => {
+    return request(app)
+      .post("/api/articles/3/comments")
+      .send({ author: "", body: "Hello world!" })
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("bad request");
+      });
+  });
+});
+
+//in the for-each test for slug and description - test for data type not ACTUAL data
