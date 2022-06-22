@@ -4,6 +4,8 @@ const { selectArticles } = require("../models/models.js");
 const { updateArticle } = require("../models/models.js");
 const { selectUsers } = require("../models/models.js");
 const { selectArticleBody } = require("../models/models.js");
+const { selectCommentsByArticle } = require("../models/models.js");
+const { insertCommentByArticleID } = require("../models/models.js");
 
 //GET ticket #3 connecting to topics
 exports.getTopics = (req, res, next) => {
@@ -56,11 +58,37 @@ exports.getUsers = (req, res, next) => {
     });
 };
 
-//GET ticket #9 - connecting to articles
+//GET ticket #9 - connecting to articles + ticket #10
 exports.getArticleBody = (req, res, next) => {
   selectArticleBody()
     .then((articles) => {
       res.status(200).send(articles);
+    })
+    .catch((err) => {
+      next(err);
+    });
+};
+
+//GET ticket #15 - connecting to article comments
+exports.getCommentsByArticle = (req, res, next) => {
+  const id = req.params.article_id;
+  selectCommentsByArticle(id)
+    .then((comments) => {
+      res.status(200).send(comments);
+    })
+    .catch((err) => {
+      next(err);
+    });
+};
+
+//POST ticket #11 - posting comment to article
+exports.postCommentOnArticle = (req, res, next) => {
+  const id = req.params.article_id;
+  const author = req.body.author;
+  const body = req.body.body;
+  insertCommentByArticleID(id, author, body)
+    .then((comment) => {
+      res.status(200).send({ comment: comment });
     })
     .catch((err) => {
       next(err);

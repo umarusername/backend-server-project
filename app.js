@@ -4,20 +4,26 @@ const { getArticles } = require("./controllers/controllers.js");
 const { patchArticle } = require("./controllers/controllers.js");
 const { getUsers } = require("./controllers/controllers.js");
 const { getArticleBody } = require("./controllers/controllers.js");
+const { getCommentsByArticle } = require("./controllers/controllers.js");
+const { postCommentOnArticle } = require("./controllers/controllers.js");
 
 const app = express();
 app.use(express.json());
 
+//ticket #3
 app.get("/api/topics", getTopics);
-
+//ticket #21
 app.get("/api/users", getUsers);
-
+//ticket #14 + ticket #5
 app.get("/api/articles/:article_id", getArticles);
-
+//ticket #9 + ticket #10 + ticket #16
 app.get("/api/articles", getArticleBody);
+//ticket #15
+app.get("/api/articles/:article_id/comments", getCommentsByArticle);
+//ticket #11
+app.post("/api/articles/:article_id/comments", postCommentOnArticle);
 
 //don't need to do app.get for patch requests
-
 //PATCH ticket #7
 app.patch("/api/articles/:article_id", patchArticle);
 
@@ -29,6 +35,7 @@ app.all("/*", (req, res) => {
 
 //first error handler then if conditions not met the err is passed to next handler below
 app.use((err, req, res, next) => {
+  //do one for 23502 error(not null violation)
   if (err.code === "22P02") {
     res.status(400).send({ msg: "bad request" });
   }
