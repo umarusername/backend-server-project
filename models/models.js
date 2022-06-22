@@ -57,9 +57,16 @@ exports.selectUsers = () => {
   });
 };
 
+//TICKET #16 IS TO REFACTIR TICKET #9
 //TICKET #10 IS TO REFACTOR TICKET #9 BELOW
 //GET ticket #9 - connecting to articles
 exports.selectArticleBody = () => {
+  if (!["article_id", "title", "votes"].includes(sort_by)) {
+    return Promise.reject({ status: 400, msg: "Invalid sort query" });
+  }
+  if (!["asc", "desc"].includes(order)) {
+    return Promise.reject({ status: 400, msg: "Invalid order query" });
+  }
   return db
     .query(
       `SELECT articles.*,

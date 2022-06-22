@@ -198,9 +198,9 @@ describe("GET /api/users", () => {
   });
 });
 
-//ticket #9 - connecting to articles + ticket #10 REFACTOR
+//ticket #9 - connecting to articles + ticket #10-refactor + ticket #16-refactor
 describe("GET /api/articles", () => {
-  test("status: 200 - connecting to endpoint successfully + ticket #10 comment count", () => {
+  test("status: 200 - connecting to endpoint successfully + ticket #10 comment count + ticket #16 queries", () => {
     return request(app)
       .get("/api/articles")
       .expect(200)

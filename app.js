@@ -16,7 +16,7 @@ app.get("/api/topics", getTopics);
 app.get("/api/users", getUsers);
 //ticket #14 + ticket #5
 app.get("/api/articles/:article_id", getArticles);
-//ticket #9 + ticket #10
+//ticket #9 + ticket #10 + ticket #16
 app.get("/api/articles", getArticleBody);
 //ticket #15
 app.get("/api/articles/:article_id/comments", getCommentsByArticle);
