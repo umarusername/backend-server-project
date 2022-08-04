@@ -58,13 +58,15 @@ exports.getUsers = (req, res, next) => {
     });
 };
 
-//GET ticket #9 - connecting to articles + ticket #10
+//GET ticket #9/#10/#16 - connecting to articles
 exports.getArticleBody = (req, res, next) => {
-  selectArticleBody()
+  const { sort_by, order, topic } = req.query;
+  selectArticleBody(sort_by, order, topic)
     .then((articles) => {
       res.status(200).send(articles);
     })
     .catch((err) => {
+      console.log("CATCH=====>", err);
       next(err);
     });
 };
@@ -94,3 +96,14 @@ exports.postCommentOnArticle = (req, res, next) => {
       next(err);
     });
 };
+
+// exports.deleteComment = (req, res, next) => {
+//   const id = req.params.comment_id;
+//   deleteCommentByID(id)
+//     .then((comment) => {
+//       res.status(200).send(comment);
+//     })
+//     .catch((err) => {
+//       next(err);
+//     });
+// };

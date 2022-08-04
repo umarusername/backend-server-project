@@ -199,7 +199,7 @@ describe("GET /api/users", () => {
 });
 
 //ticket #9 - connecting to articles + ticket #10-refactor + ticket #16-refactor
-describe("GET /api/articles", () => {
+xdescribe("GET /api/articles", () => {
   test("status: 200 - connecting to endpoint successfully + ticket #10 comment count + ticket #16 queries", () => {
     return request(app)
       .get("/api/articles")
@@ -207,7 +207,7 @@ describe("GET /api/articles", () => {
       .then(({ body }) => {
         expect(body).toHaveLength(12);
         body.forEach((article) => {
-          // console.log("comment count==>", body.articles.comment_count);
+          console.log("comment count(ARTICLE OBJECT)==>", article);
           expect(article).toEqual(
             expect.objectContaining({
               title: expect.any(String),
@@ -222,22 +222,86 @@ describe("GET /api/articles", () => {
         });
       });
   });
-
+  //"?topic=order_by"
+  //"?order=asc"
+  //?sort_by=created_at&order=asc"
   test("status: 200 - articles sorted by date in descending order", () => {
     return request(app)
-      .get("/api/articles?sort_by=created_at")
+      .get("/api/articles?sort_by=created_at&order=desc")
       .expect(200)
       .then(({ body }) => {
+        // console.log("COMING FROM TEST====>", body);
         expect(body).toBeSortedBy("created_at", { descending: true });
       });
   });
 
-  test("status: 404 - can't find user endpoint", () => {
+  test("status: 200 - accepts sortby query for votes", () => {
     return request(app)
-      .get("/api/artikles")
+      .get("/api/articles?sort_by=votes")
+      .expect(200)
+      .then(({ body }) => {
+        // console.log("COMING FROM TEST====>", body);
+        expect(body).toBeSortedBy("votes", { descending: true });
+      });
+  });
+
+  test("status: 200 - accepts order query for votes", () => {
+    return request(app)
+      .get("/api/articles?order=asc")
+      .expect(200)
+      .then(({ body }) => {
+        console.log("COMING FROM TEST====>", body);
+        expect(body).toBeSorted({ ascending: true });
+      });
+  });
+
+  //make tests for getting a topic, and for the orders
+  test("status: 200 - articles filtered by topic cats", () => {
+    return request(app)
+      .get("/api/articles?topic=cats")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body).toHaveLength(1);
+      });
+  });
+
+  //THIS TEST BREAKS IF I ADD THE PROMISE REJECT BACK IN FOR TICKET #16
+  test("status: 200 - topic exists but no articles", () => {
+    return request(app)
+      .get("/api/articles?topic=paper")
+      .expect(200)
+      .then(({ body }) => {
+        // console.log("TEST=======>", body);
+        expect(body).toEqual([]);
+      });
+  });
+
+  //STILL NOT WORKING
+  test.only("status: 404 - non existant topic e.g bananas", () => {
+    return request(app)
+      .get("/api/articles?topic=NONEEXISTANT")
       .expect(404)
       .then(({ body }) => {
-        expect(body.msg).toBe("path not found");
+        console.log("COMING FROM TEST----->", body);
+        expect(body.msg).toBe("Topic not found");
+      });
+  });
+
+  test("status: 400 - invalid sortby query", () => {
+    return request(app)
+      .get("/api/articles?sort_by=potatos")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Invalid sort query");
+      });
+  });
+
+  test("status: 400 - invalid order query", () => {
+    return request(app)
+      .get("/api/articles?order=potatos")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Invalid order query");
       });
   });
 });
