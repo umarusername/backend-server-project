@@ -22,6 +22,8 @@ app.get("/api/articles", getArticleBody);
 app.get("/api/articles/:article_id/comments", getCommentsByArticle);
 //ticket #11
 app.post("/api/articles/:article_id/comments", postCommentOnArticle);
+//ticket #12
+// app.delete("/api/comments/:comment_id", deleteComment);
 
 //don't need to do app.get for patch requests
 //PATCH ticket #7
